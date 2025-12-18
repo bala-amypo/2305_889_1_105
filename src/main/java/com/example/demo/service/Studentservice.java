@@ -27,6 +27,6 @@ public class Studentservice {
         return mp.put(id,st);
       }
       public Studententity isd(int id){
-        return mp.put(id);
+        return mp.remove(id);
         }
     }
