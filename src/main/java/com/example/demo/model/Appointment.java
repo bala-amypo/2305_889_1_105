@@ -30,7 +30,7 @@ public class Appointment {
     @Column(nullable = false)
     private String status;
 
-    // Default status = SCHEDULED
+   
     @PrePersist
     public void prePersist() {
         if (appointmentDate.isBefore(LocalDate.now())) {
@@ -41,7 +41,7 @@ public class Appointment {
         }
     }
 
-    // Getters and Setters
+   
     public Long getId() {
         return id;
     }

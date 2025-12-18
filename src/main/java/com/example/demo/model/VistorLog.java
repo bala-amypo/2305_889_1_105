@@ -32,14 +32,13 @@ public class VisitLog {
     @Column(nullable = false)
     private Boolean alertSent;
 
-    // Auto-generate checkInTime and default alertSent = false
     @PrePersist
     public void onCheckIn() {
         this.checkInTime = LocalDateTime.now();
         this.alertSent = false;
     }
 
-    // Getters and Setters
+    
     public Long getId() {
         return id;
     }
