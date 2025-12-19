@@ -1,61 +1,66 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-public class Visitor{
+import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "visitors")
+public class Visitor {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String  email;
-    private String phonenumber;
+
+    @NotBlank
+    @Column(nullable = false)
+    private String fullName;
+
+    private String email;
+
+    @NotBlank
+    @Column(nullable = false)
+    private String phone;
+
+    @NotBlank
+    @Column(nullable = false)
     private String idProofNumber;
+
+    @Column(nullable = false)
     private LocalDateTime createdAt;
-    public Long getId() {
-        return id;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
     }
-    public void setId(Long id) {
+
+    public Visitor() {}
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getIdProofNumber() { return idProofNumber; }
+    public void setIdProofNumber(String idProofNumber) { this.idProofNumber = idProofNumber; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public Visitor(Long id, @NotBlank String fullName, String email, @NotBlank String phone,
+            @NotBlank String idProofNumber, LocalDateTime createdAt) {
         this.id = id;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
+        this.fullName = fullName;
         this.email = email;
-    }
-    public String getPhonenumber() {
-        return phonenumber;
-    }
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
-    }
-    public String getIdProofNumber() {
-        return idProofNumber;
-    }
-    public void setIdProofNumber(String idProofNumber) {
-        this.idProofNumber = idProofNumber;
-    }
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-    public Visitor(Long id, String name, String email, String phonenumber, String idProofNumber, LocalDateTime createdAt) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.phonenumber = phonenumber;
+        this.phone = phone;
         this.idProofNumber = idProofNumber;
         this.createdAt = createdAt;
     }
-    public Visitor() {
-    }
     
-    
-  
 }
