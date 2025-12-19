@@ -1,72 +1,45 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-    name = "alert_notification",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = "visit_log_id")
-    }
-)
+@Table(name = "alert_notifications")
 public class AlertNotification {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-  
     @OneToOne
-    @JoinColumn(name = "visit_log_id", nullable = false, unique = true)
+    @JoinColumn(name = "visit_log_id", nullable = false)
     private VisitLog visitLog;
 
-    @Column(nullable = false)
     private String sentTo;
 
-    @Column(nullable = false)
     private String alertMessage;
 
     @Column(nullable = false)
     private LocalDateTime sentAt;
 
-   
     @PrePersist
-    public void onSend() {
-        this.sentAt = LocalDateTime.now();
+    protected void onCreate() {
+        sentAt = LocalDateTime.now();
     }
 
-   
-    public Long getId() {
-        return id;
-    }
+    public AlertNotification() {}
 
-    public VisitLog getVisitLog() {
-        return visitLog;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setVisitLog(VisitLog visitLog) {
-        this.visitLog = visitLog;
-    }
+    public VisitLog getVisitLog() { return visitLog; }
+    public void setVisitLog(VisitLog visitLog) { this.visitLog = visitLog; }
 
-    public String getSentTo() {
-        return sentTo;
-    }
+    public String getSentTo() { return sentTo; }
+    public void setSentTo(String sentTo) { this.sentTo = sentTo; }
 
-    public void setSentTo(String sentTo) {
-        this.sentTo = sentTo;
-    }
+    public String getAlertMessage() { return alertMessage; }
+    public void setAlertMessage(String alertMessage) { this.alertMessage = alertMessage; }
 
-    public String getAlertMessage() {
-        return alertMessage;
-    }
-
-    public void setAlertMessage(String alertMessage) {
-        this.alertMessage = alertMessage;
-    }
-
-    public LocalDateTime getSentAt() {
-        return sentAt;
-    }
+    public LocalDateTime getSentAt() { return sentAt; }
+    public void setSentAt(LocalDateTime sentAt) { this.sentAt = sentAt; }
 }
