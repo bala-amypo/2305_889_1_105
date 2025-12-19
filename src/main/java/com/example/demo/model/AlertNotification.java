@@ -42,4 +42,13 @@ public class AlertNotification {
 
     public LocalDateTime getSentAt() { return sentAt; }
     public void setSentAt(LocalDateTime sentAt) { this.sentAt = sentAt; }
+
+    public AlertNotification(Long id, VisitLog visitLog, String sentTo, String alertMessage, LocalDateTime sentAt) {
+        this.id = id;
+        this.visitLog = visitLog;
+        this.sentTo = sentTo;
+        this.alertMessage = alertMessage;
+        this.sentAt = sentAt;
+    }
+    
 }
