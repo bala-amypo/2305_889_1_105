@@ -1,7 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Host;
-//import com.example.demo.service.HostService;
+import com.example.demo.service.HostService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/hosts")
-@Tag(name = "Hosts", description = "Host management endpoints")
+@Tag(name = "Hosts", description = "Host/Employee management")
+@SecurityRequirement(name = "bearerAuth")
 public class HostController {
 
     private final HostService hostService;

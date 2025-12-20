@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Appointment;
 import com.example.demo.service.AppointmentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/appointments")
-@Tag(name = "Appointments", description = "Appointment management endpoints")
+@Tag(name = "Appointments", description = "Appointment scheduling")
+@SecurityRequirement(name = "bearerAuth")
 public class AppointmentController {
 
     private final AppointmentService appointmentService;

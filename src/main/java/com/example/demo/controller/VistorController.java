@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Visitor;
 import com.example.demo.service.VisitorService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/visitors")
 @Tag(name = "Visitors", description = "Visitor management endpoints")
+@SecurityRequirement(name = "bearerAuth")
 public class VisitorController {
 
     private final VisitorService visitorService;
