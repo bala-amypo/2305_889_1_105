@@ -1,8 +1,7 @@
 package com.example.demo.service;
 
-import java.util.List;
-
 import com.example.demo.model.VisitLog;
+import java.util.List;
 
 public interface VisitLogService {
     VisitLog checkInVisitor(Long visitorId, Long hostId, String purpose);
