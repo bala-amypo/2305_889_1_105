@@ -1,54 +1,25 @@
-package com.example.demo.model;
+package com.example.demo.dto;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+public class AuthResponse {
+    private String token;
+    private Long userId;
+    private String email;
+    private String role;
 
-@Entity 
-@Table(name = "alert_notifications")
-public class AlertNotification {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToOne
-    @JoinColumn(name = "visit_log_id", nullable = false)
-    private VisitLog visitLog;
-
-    private String sentTo;
-
-    private String alertMessage;
-
-    @Column(nullable = false)
-    private LocalDateTime sentAt;
-
-    @PrePersist
-    protected void onCreate() {
-        sentAt = LocalDateTime.now();
+    public AuthResponse(String token, Long userId, String email, String role) {
+        this.token = token;
+        this.userId = userId;
+        this.email = email;
+        this.role = role;
     }
 
-    public AlertNotification() {}
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public VisitLog getVisitLog() { return visitLog; }
-    public void setVisitLog(VisitLog visitLog) { this.visitLog = visitLog; }
-
-    public String getSentTo() { return sentTo; }
-    public void setSentTo(String sentTo) { this.sentTo = sentTo; }
-
-    public String getAlertMessage() { return alertMessage; }
-    public void setAlertMessage(String alertMessage) { this.alertMessage = alertMessage; }
-
-    public LocalDateTime getSentAt() { return sentAt; }
-    public void setSentAt(LocalDateTime sentAt) { this.sentAt = sentAt; }
-
-    public AlertNotification(Long id, VisitLog visitLog, String sentTo, String alertMessage, LocalDateTime sentAt) {
-        this.id = id;
-        this.visitLog = visitLog;
-        this.sentTo = sentTo;
-        this.alertMessage = alertMessage;
-        this.sentAt = sentAt;
-    }
-    
+    // Getters and Setters
+    public String getToken() { return token; }
+    public void setToken(String token) { this.token = token; }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }
