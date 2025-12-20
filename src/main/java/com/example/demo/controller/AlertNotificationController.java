@@ -2,37 +2,33 @@ package com.example.demo.controller;
 
 import com.example.demo.model.AlertNotification;
 import com.example.demo.service.AlertNotificationService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/alerts")
-@Tag(name = "Alerts", description = "Alert notifications to hosts")
-@SecurityRequirement(name = "bearerAuth")
 public class AlertNotificationController {
 
-    private final AlertNotificationService alertNotificationService;
+    private final AlertNotificationService alertService;
 
-    public AlertNotificationController(AlertNotificationService alertNotificationService) {
-        this.alertNotificationService = alertNotificationService;
+    public AlertNotificationController(AlertNotificationService alertService) {
+        this.alertService = alertService;
     }
 
     @PostMapping("/send/{visitLogId}")
-    public ResponseEntity<AlertNotification> sendAlert(@PathVariable Long visitLogId) {
-        return ResponseEntity.ok(alertNotificationService.sendAlert(visitLogId));
+    public ResponseEntity<AlertNotification> send(@PathVariable Long visitLogId) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(alertService.sendAlert(visitLogId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AlertNotification> getAlert(@PathVariable Long id) {
-        return ResponseEntity.ok(alertNotificationService.getAlert(id));
+    public ResponseEntity<AlertNotification> get(@PathVariable Long id) {
+        return ResponseEntity.ok(alertService.getAlert(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<AlertNotification>> getAllAlerts() {
-        return ResponseEntity.ok(alertNotificationService.getAllAlerts());
+    public ResponseEntity<List<AlertNotification>> getAll() {
+        return ResponseEntity.ok(alertService.getAllAlerts());
     }
 }

@@ -2,17 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Visitor;
 import com.example.demo.service.VisitorService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/visitors")
-@Tag(name = "Visitors", description = "Visitor management endpoints")
-@SecurityRequirement(name = "bearerAuth")
 public class VisitorController {
 
     private final VisitorService visitorService;
@@ -22,17 +17,17 @@ public class VisitorController {
     }
 
     @PostMapping
-    public ResponseEntity<Visitor> createVisitor(@RequestBody Visitor visitor) {
-        return ResponseEntity.ok(visitorService.createVisitor(visitor));
+    public ResponseEntity<Visitor> create(@RequestBody Visitor visitor) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(visitorService.createVisitor(visitor));
     }
 
     @GetMapping
-    public ResponseEntity<List<Visitor>> getAllVisitors() {
+    public ResponseEntity<List<Visitor>> getAll() {
         return ResponseEntity.ok(visitorService.getAllVisitors());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Visitor> getVisitor(@PathVariable Long id) {
+    public ResponseEntity<Visitor> get(@PathVariable Long id) {
         return ResponseEntity.ok(visitorService.getVisitor(id));
     }
 }

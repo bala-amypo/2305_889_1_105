@@ -2,17 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Appointment;
 import com.example.demo.service.AppointmentService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/appointments")
-@Tag(name = "Appointments", description = "Appointment scheduling")
-@SecurityRequirement(name = "bearerAuth")
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
@@ -22,25 +17,27 @@ public class AppointmentController {
     }
 
     @PostMapping("/{visitorId}/{hostId}")
-    public ResponseEntity<Appointment> createAppointment(
+    public ResponseEntity<Appointment> create(
             @PathVariable Long visitorId,
             @PathVariable Long hostId,
             @RequestBody Appointment appointment) {
-        return ResponseEntity.ok(appointmentService.createAppointment(visitorId, hostId, appointment));
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(appointmentService.createAppointment(visitorId, hostId, appointment));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Appointment> get(@PathVariable Long id) {
+        return ResponseEntity.ok(appointmentService.getAppointment(id));
     }
 
     @GetMapping("/host/{hostId}")
-    public ResponseEntity<List<Appointment>> getAppointmentsForHost(@PathVariable Long hostId) {
+    public ResponseEntity<List<Appointment>> getByHost(@PathVariable Long hostId) {
         return ResponseEntity.ok(appointmentService.getAppointmentsForHost(hostId));
     }
 
     @GetMapping("/visitor/{visitorId}")
-    public ResponseEntity<List<Appointment>> getAppointmentsForVisitor(@PathVariable Long visitorId) {
+    public ResponseEntity<List<Appointment>> getByVisitor(@PathVariable Long visitorId) {
         return ResponseEntity.ok(appointmentService.getAppointmentsForVisitor(visitorId));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Appointment> getAppointment(@PathVariable Long id) {
-        return ResponseEntity.ok(appointmentService.getAppointment(id));
     }
 }
