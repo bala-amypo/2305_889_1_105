@@ -1,50 +1,44 @@
-package com.example.demo.entity;
+package com.example.demo.controller;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+import com.example.demo.entity.AlertNotification;
+import com.example.demo.service.AlertNotificationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Entity
-@Table(name = "alert_notifications")
-public class AlertNotification {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+import java.util.List;
 
-    @OneToOne
-    @JoinColumn(name = "visit_log_id", nullable = false)
-    private VisitLog visitLog;
+@RestController
+@RequestMapping("/api/alerts")
+@Tag(name = "Alerts", description = "Alert notifications to hosts")
+@SecurityRequirement(name = "Bearer Authentication")
+public class AlertNotificationController {
 
-    @NotBlank
-    @Column(nullable = false)
-    private String sentTo;
+    @Autowired
+    private AlertNotificationService alertNotificationService;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String alertMessage;
-
-    @Column(nullable = false)
-    private LocalDateTime sentAt;
-
-    @PrePersist
-    protected void onCreate() {
-        sentAt = LocalDateTime.now();
+    @PostMapping("/send/{visitLogId}")
+    @Operation(summary = "Send alert notification")
+    public ResponseEntity<AlertNotification> sendAlert(@PathVariable Long visitLogId) {
+        AlertNotification alert = alertNotificationService.sendAlert(visitLogId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(alert);
     }
 
-    public AlertNotification() {}
+    @GetMapping("/{id}")
+    @Operation(summary = "Get alert by ID")
+    public ResponseEntity<AlertNotification> getAlert(@PathVariable Long id) {
+        AlertNotification alert = alertNotificationService.getAlert(id);
+        return ResponseEntity.ok(alert);
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public VisitLog getVisitLog() { return visitLog; }
-    public void setVisitLog(VisitLog visitLog) { this.visitLog = visitLog; }
-
-    public String getSentTo() { return sentTo; }
-    public void setSentTo(String sentTo) { this.sentTo = sentTo; }
-
-    public String getAlertMessage() { return alertMessage; }
-    public void setAlertMessage(String alertMessage) { this.alertMessage = alertMessage; }
-
-    public LocalDateTime getSentAt() { return sentAt; }
-    public void setSentAt(LocalDateTime sentAt) { this.sentAt = sentAt; }
+    @GetMapping
+    @Operation(summary = "Get all alerts")
+    public ResponseEntity<List<AlertNotification>> getAllAlerts() {
+        List<AlertNotification> alerts = alertNotificationService.getAllAlerts();
+        return ResponseEntity.ok(alerts);
+    }
 }

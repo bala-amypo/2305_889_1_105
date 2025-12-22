@@ -1,76 +1,55 @@
-package com.example.demo.entity;
+package com.example.demo.controller;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import com.example.demo.entity.VisitLog;
+import com.example.demo.service.VisitLogService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Entity
-@Table(name = "visit_logs")
-public class VisitLog {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+import java.util.List;
+import java.util.Map;
 
-    @ManyToOne
-    @JoinColumn(name = "visitor_id", nullable = false)
-    private Visitor visitor;
+@RestController
+@RequestMapping("/api/visits")
+@Tag(name = "Visit Logs", description = "Check-in and check-out operations")
+@SecurityRequirement(name = "Bearer Authentication")
+public class VisitLogController {
 
-    @ManyToOne
-    @JoinColumn(name = "host_id", nullable = false)
-    private Host host;
+    @Autowired
+    private VisitLogService visitLogService;
 
-    @Column(nullable = false)
-    private LocalDateTime checkInTime;
-
-    private LocalDateTime checkOutTime;
-
-    private String purpose;
-
-    @Column(nullable = false)
-    private Boolean accessGranted;
-
-    @Column(nullable = false)
-    private Boolean alertSent = false;
-
-    @OneToOne(mappedBy = "visitLog", cascade = CascadeType.ALL)
-    private AlertNotification alertNotification;
-
-    @PrePersist
-    protected void onCreate() {
-        checkInTime = LocalDateTime.now();
-        if (accessGranted == null) {
-            accessGranted = true;
-        }
-        if (alertSent == null) {
-            alertSent = false;
-        }
+    @PostMapping("/checkin/{visitorId}/{hostId}")
+    @Operation(summary = "Check in visitor")
+    public ResponseEntity<VisitLog> checkInVisitor(@PathVariable Long visitorId, 
+                                                  @PathVariable Long hostId, 
+                                                  @RequestBody Map<String, String> request) {
+        String purpose = request.get("purpose");
+        VisitLog visitLog = visitLogService.checkInVisitor(visitorId, hostId, purpose);
+        return ResponseEntity.status(HttpStatus.CREATED).body(visitLog);
     }
 
-    public VisitLog() {}
+    @PostMapping("/checkout/{visitLogId}")
+    @Operation(summary = "Check out visitor")
+    public ResponseEntity<VisitLog> checkOutVisitor(@PathVariable Long visitLogId) {
+        VisitLog visitLog = visitLogService.checkOutVisitor(visitLogId);
+        return ResponseEntity.ok(visitLog);
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @GetMapping("/active")
+    @Operation(summary = "Get all active visits")
+    public ResponseEntity<List<VisitLog>> getActiveVisits() {
+        List<VisitLog> activeVisits = visitLogService.getActiveVisits();
+        return ResponseEntity.ok(activeVisits);
+    }
 
-    public Visitor getVisitor() { return visitor; }
-    public void setVisitor(Visitor visitor) { this.visitor = visitor; }
-
-    public Host getHost() { return host; }
-    public void setHost(Host host) { this.host = host; }
-
-    public LocalDateTime getCheckInTime() { return checkInTime; }
-    public void setCheckInTime(LocalDateTime checkInTime) { this.checkInTime = checkInTime; }
-
-    public LocalDateTime getCheckOutTime() { return checkOutTime; }
-    public void setCheckOutTime(LocalDateTime checkOutTime) { this.checkOutTime = checkOutTime; }
-
-    public String getPurpose() { return purpose; }
-    public void setPurpose(String purpose) { this.purpose = purpose; }
-
-    public Boolean getAccessGranted() { return accessGranted; }
-    public void setAccessGranted(Boolean accessGranted) { this.accessGranted = accessGranted; }
-
-    public Boolean getAlertSent() { return alertSent; }
-    public void setAlertSent(Boolean alertSent) { this.alertSent = alertSent; }
-
-    public AlertNotification getAlertNotification() { return alertNotification; }
-    public void setAlertNotification(AlertNotification alertNotification) { this.alertNotification = alertNotification; }
+    @GetMapping("/{id}")
+    @Operation(summary = "Get visit log by ID")
+    public ResponseEntity<VisitLog> getVisitLog(@PathVariable Long id) {
+        VisitLog visitLog = visitLogService.getVisitLog(id);
+        return ResponseEntity.ok(visitLog);
+    }
 }
