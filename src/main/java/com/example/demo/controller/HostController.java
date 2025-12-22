@@ -1,45 +1,77 @@
-package com.example.demo.controller;
+package com.example.demo.entity;
 
-import com.example.demo.entity.Host;
-import com.example.demo.service.HostService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/hosts")
-@Tag(name = "Hosts", description = "Host/Employee management")
-@SecurityRequirement(name = "Bearer Authentication")
-public class HostController {
+@Entity
+@Table(name = "hosts")
+public class Host {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private final HostService hostService;
+    @NotBlank
+    @Column(nullable = false)
+    private String hostName;
 
-    public HostController(HostService hostService) {
-        this.hostService = hostService;
+    private String fullname;
+
+    @Email
+    @NotBlank
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @NotBlank
+    @Column(nullable = false)
+    private String department;
+
+    @NotBlank
+    @Column(nullable = false)
+    private String phone;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+    private List<Appointment> appointments;
+
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+    private List<VisitLog> visitLogs;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
     }
 
-    @PostMapping
-    @Operation(summary = "Create a new host")
-    public ResponseEntity<Host> createHost(@RequestBody Host host) {
-        Host createdHost = hostService.createHost(host);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdHost);
-    }
+    public Host() {}
 
-    @GetMapping
-    @Operation(summary = "Get all hosts")
-    public ResponseEntity<List<Host>> getAllHosts() {
-        List<Host> hosts = hostService.getAllHosts();
-        return ResponseEntity.ok(hosts);
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get host by ID")
-    public ResponseEntity<Host> getHost(@PathVariable Long id) {
-        Host host = hostService.getHost(id);
-        return ResponseEntity.ok(host);
-    }
+    public String getHostName() { return hostName; }
+    public void setHostName(String hostName) { this.hostName = hostName; }
+
+    public String getFullname() { return fullname; }
+    public void setFullname(String fullname) { this.fullname = fullname; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getDepartment() { return department; }
+    public void setDepartment(String department) { this.department = department; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public List<Appointment> getAppointments() { return appointments; }
+    public void setAppointments(List<Appointment> appointments) { this.appointments = appointments; }
+
+    public List<VisitLog> getVisitLogs() { return visitLogs; }
+    public void setVisitLogs(List<VisitLog> visitLogs) { this.visitLogs = visitLogs; }
 }
