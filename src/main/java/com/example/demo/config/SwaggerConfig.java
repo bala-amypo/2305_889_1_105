@@ -26,5 +26,7 @@ public class SwaggerConfig {
                                         .scheme("bearer")
                                         .bearerFormat("JWT")
                                         .description("JWT token required for API access")));
+                                        .servers(List.of(
+                        new Server().url("https://9105.pro604cr.amypo.ai/") ));
     }
 }
