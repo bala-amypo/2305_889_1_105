@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -6,12 +6,12 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "alert_notifications")
 public class AlertNotification {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
+    @JoinColumn(name = "visit_log_id")
     private VisitLog visitLog;
 
     private String sentTo;
@@ -19,8 +19,16 @@ public class AlertNotification {
     private LocalDateTime sentAt;
 
     @PrePersist
-    void onCreate() {
-        this.sentAt = LocalDateTime.now();
+    protected void onCreate() {
+        sentAt = LocalDateTime.now();
+    }
+
+    public AlertNotification() {}
+
+    public AlertNotification(VisitLog visitLog, String sentTo, String alertMessage) {
+        this.visitLog = visitLog;
+        this.sentTo = sentTo;
+        this.alertMessage = alertMessage;
     }
 
     public Long getId() { return id; }
@@ -32,4 +40,5 @@ public class AlertNotification {
     public String getAlertMessage() { return alertMessage; }
     public void setAlertMessage(String alertMessage) { this.alertMessage = alertMessage; }
     public LocalDateTime getSentAt() { return sentAt; }
+    public void setSentAt(LocalDateTime sentAt) { this.sentAt = sentAt; }
 }

@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -6,26 +6,39 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "visit_logs")
 public class VisitLog {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "visitor_id")
     private Visitor visitor;
 
     @ManyToOne
+    @JoinColumn(name = "host_id")
     private Host host;
 
     private LocalDateTime checkInTime;
     private LocalDateTime checkOutTime;
     private String purpose;
-    private Boolean accessGranted;
+    private Boolean accessGranted = true;
     private Boolean alertSent = false;
 
     @PrePersist
-    void onCreate() {
-        this.checkInTime = LocalDateTime.now();
+    protected void onCreate() {
+        if (checkInTime == null) {
+            checkInTime = LocalDateTime.now();
+        }
+    }
+
+    public VisitLog() {}
+
+    public VisitLog(Visitor visitor, Host host, String purpose) {
+        this.visitor = visitor;
+        this.host = host;
+        this.purpose = purpose;
+        this.accessGranted = true;
+        this.alertSent = false;
     }
 
     public Long getId() { return id; }
@@ -35,6 +48,7 @@ public class VisitLog {
     public Host getHost() { return host; }
     public void setHost(Host host) { this.host = host; }
     public LocalDateTime getCheckInTime() { return checkInTime; }
+    public void setCheckInTime(LocalDateTime checkInTime) { this.checkInTime = checkInTime; }
     public LocalDateTime getCheckOutTime() { return checkOutTime; }
     public void setCheckOutTime(LocalDateTime checkOutTime) { this.checkOutTime = checkOutTime; }
     public String getPurpose() { return purpose; }
