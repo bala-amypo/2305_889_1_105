@@ -1,48 +1,48 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.AlertNotification;
-import com.example.demo.entity.VisitLog;
-import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.AlertNotification;
+import com.example.demo.model.VisitLog;
 import com.example.demo.repository.AlertNotificationRepository;
 import com.example.demo.repository.VisitLogRepository;
 import com.example.demo.service.AlertNotificationService;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class AlertNotificationServiceImpl implements AlertNotificationService {
+    private AlertNotificationRepository alertRepository;
+    private VisitLogRepository visitLogRepository;
 
-    private final AlertNotificationRepository alertRepository;
-    private final VisitLogRepository visitLogRepository;
-
-    public AlertNotificationServiceImpl(AlertNotificationRepository alertRepository, 
-                                      VisitLogRepository visitLogRepository) {
-        this.alertRepository = alertRepository;
-        this.visitLogRepository = visitLogRepository;
-    }
+    public AlertNotificationServiceImpl() {}
 
     @Override
     public AlertNotification sendAlert(Long visitLogId) {
         if (alertRepository.findByVisitLogId(visitLogId).isPresent()) {
-            throw new IllegalArgumentException("Alert already sent");
+            throw new IllegalArgumentException("Alert already sent for this visit");
         }
-
+        
         VisitLog visitLog = visitLogRepository.findById(visitLogId)
-                .orElseThrow(() -> new ResourceNotFoundException("Visit log not found"));
-
+            .orElseThrow(() -> new RuntimeException("VisitLog not found"));
+            
         AlertNotification alert = new AlertNotification();
-        alert.setVisitLog(visitLog);
+        alert.setVisitLogId(visitLogId);
+        alert.setAlertMessage("Visitor " + visitLog.getVisitor().getFullName() + " has checked in");
         alert.setSentTo(visitLog.getHost().getEmail());
-        alert.setAlertMessage("Visitor " + visitLog.getVisitor().getFullName() + " has checked in to see " + visitLog.getHost().getHostName());
-
-        return alertRepository.save(alert);
+        alert.setSentAt(LocalDateTime.now());
+        
+        AlertNotification saved = alertRepository.save(alert);
+        
+        visitLog.setAlertSent(true);
+        visitLogRepository.save(visitLog);
+        
+        return saved;
     }
 
     @Override
     public AlertNotification getAlert(Long id) {
         return alertRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Alert not found"));
+            .orElseThrow(() -> new RuntimeException("Alert not found"));
     }
 
     @Override
