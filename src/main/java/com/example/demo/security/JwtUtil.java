@@ -2,55 +2,34 @@ package com.example.demo.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
+import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
-    
-    @Value("${jwt.secret:mySecretKeyThatIsAtLeast32BytesLongForHS256Algorithm}")
     private String secret;
-    
-    @Value("${jwt.expiration:86400000}")
     private Long jwtExpirationMs;
 
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
-    }
-
     public String generateToken(String username, String role, Long userId, String email) {
+        Key key = Keys.hmacShaKeyFor(secret.getBytes());
+        
         return Jwts.builder()
-                .setSubject(username)
-                .claim("role", role)
-                .claim("userId", userId)
-                .claim("email", email)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
+            .setSubject(username)
+            .claim("role", role)
+            .claim("userId", userId)
+            .claim("email", email)
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
     }
 
-    public Claims validateAndGetClaims(String token) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (JwtException e) {
-            throw new JwtException("Invalid JWT token", e);
-        }
-    }
-
-    public String getTokenFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
+    public Jws<Claims> validateAndGetClaims(String token) {
+        Key key = Keys.hmacShaKeyFor(secret.getBytes());
+        return Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token);
     }
 }
