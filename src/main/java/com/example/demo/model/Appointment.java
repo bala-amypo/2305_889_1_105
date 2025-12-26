@@ -9,38 +9,48 @@ public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @ManyToOne
-    @JoinColumn(name = "visitor_id")
+    @JoinColumn(name = "visitor_id", nullable = false)
     private Visitor visitor;
-    
+
     @ManyToOne
-    @JoinColumn(name = "host_id")
+    @JoinColumn(name = "host_id", nullable = false)
     private Host host;
-    
+
     @Column(nullable = false)
     private LocalDate appointmentDate;
-    
-    @Column(nullable = false)
+
     private String purpose;
-    
-    private String status;
+
+    @Column(nullable = false)
+    private String status = "SCHEDULED";
+
+    public Appointment() {}
+
+    public Appointment(Visitor visitor, Host host, LocalDate appointmentDate, String purpose) {
+        this.visitor = visitor;
+        this.host = host;
+        this.appointmentDate = appointmentDate;
+        this.purpose = purpose;
+        this.status = "SCHEDULED";
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    
+
     public Visitor getVisitor() { return visitor; }
     public void setVisitor(Visitor visitor) { this.visitor = visitor; }
-    
+
     public Host getHost() { return host; }
     public void setHost(Host host) { this.host = host; }
-    
+
     public LocalDate getAppointmentDate() { return appointmentDate; }
     public void setAppointmentDate(LocalDate appointmentDate) { this.appointmentDate = appointmentDate; }
-    
+
     public String getPurpose() { return purpose; }
     public void setPurpose(String purpose) { this.purpose = purpose; }
-    
+
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 }
