@@ -1,40 +1,24 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "appointments")
 public class Appointment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "visitor_id", nullable = false)
     private Visitor visitor;
 
     @ManyToOne
-    @JoinColumn(name = "host_id", nullable = false)
     private Host host;
 
-    @Column(nullable = false)
     private LocalDate appointmentDate;
-
     private String purpose;
-
-    @Column(nullable = false)
-    private String status = "SCHEDULED";
-
-    public Appointment() {}
-
-    public Appointment(Visitor visitor, Host host, LocalDate appointmentDate, String purpose) {
-        this.visitor = visitor;
-        this.host = host;
-        this.appointmentDate = appointmentDate;
-        this.purpose = purpose;
-        this.status = "SCHEDULED";
-    }
+    private String status; // expected default to SCHEDULED on create
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

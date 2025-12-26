@@ -1,12 +1,11 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.AlertNotification;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.*;
 
-import java.util.Optional;
-
-@Repository
-public interface AlertNotificationRepository extends JpaRepository<AlertNotification, Long> {
+public interface AlertNotificationRepository {
+    AlertNotification save(AlertNotification a);
+    Optional<AlertNotification> findById(Long id);
+    List<AlertNotification> findAll();
     Optional<AlertNotification> findByVisitLogId(Long visitLogId);
 }
