@@ -2,18 +2,20 @@ package com.example.demo.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
-    
-    @Value("${jwt.secret:0123456789ABCDEF0123456789ABCDEF}")
+
+    @Value("${app.jwt.secret}")
     private String secret;
-    
-    @Value("${jwt.expiration:3600000}")
+
+    @Value("${app.jwt.expiration}")
     private Long jwtExpirationMs;
 
     private SecretKey getSigningKey() {
@@ -28,14 +30,26 @@ public class JwtUtil {
                 .claim("email", email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(getSigningKey())
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public Jws<Claims> validateAndGetClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token);
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new JwtException("Invalid JWT token");
+        }
+    }
+
+    public String getTokenFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 }
