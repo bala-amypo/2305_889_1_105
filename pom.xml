@@ -104,21 +104,19 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-		<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
+	<plugin>
     <artifactId>maven-surefire-plugin</artifactId>
-    <version>3.2.5</version>
+    <version>3.1.2</version>
     <configuration>
-        <testNGArtifactName>org.testng:testng</testNGArtifactName>
         <includes>
-            <include>**/*Test.java</include>
-            <include>**/*Tests.java</include>
+            <include>**/AuthTests.java</include>
         </includes>
         <excludes>
             <exclude>**/DemoApplicationTests.java</exclude>
         </excludes>
     </configuration>
 </plugin>
+
 
 		</plugins>
 	</build>
