@@ -1,51 +1,51 @@
-// package com.example.demo.model;
+package com.example.demo.model;
 
-// import jakarta.persistence.*;
-// import jakarta.validation.constraints.NotNull;
-// import java.time.LocalDate;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 
-// @Entity
-// @Table(name = "appointments")
-// public class Appointment {
-//     @Id
-//     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//     private Long id;
+@Entity
+@Table(name = "appointments")
+public class Appointment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-//     @ManyToOne
-//     @JoinColumn(name = "visitor_id", nullable = false)
-//     private Visitor visitor;
+    @ManyToOne
+    @JoinColumn(name = "visitor_id", nullable = false)
+    private Visitor visitor;
 
-//     @ManyToOne
-//     @JoinColumn(name = "host_id", nullable = false)
-//     private Host host;
+    @ManyToOne
+    @JoinColumn(name = "host_id", nullable = false)
+    private Host host;
 
-//     @NotNull
-//     @Column(nullable = false)
-//     private LocalDate appointmentDate;
+    @NotNull
+    @Column(nullable = false)
+    private LocalDate appointmentDate;
 
-//     @Column(nullable = false)
-//     private String purpose;
+    @Column(nullable = false)
+    private String purpose;
 
-//     @Column(nullable = false)
-//     private String status;
+    @Column(nullable = false)
+    private String status;
 
-//     public Appointment() {}
+    public Appointment() {}
 
-//     public Long getId() { return id; }
-//     public void setId(Long id) { this.id = id; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-//     public Visitor getVisitor() { return visitor; }
-//     public void setVisitor(Visitor visitor) { this.visitor = visitor; }
+    public Visitor getVisitor() { return visitor; }
+    public void setVisitor(Visitor visitor) { this.visitor = visitor; }
 
-//     public Host getHost() { return host; }
-//     public void setHost(Host host) { this.host = host; }
+    public Host getHost() { return host; }
+    public void setHost(Host host) { this.host = host; }
 
-//     public LocalDate getAppointmentDate() { return appointmentDate; }
-//     public void setAppointmentDate(LocalDate appointmentDate) { this.appointmentDate = appointmentDate; }
+    public LocalDate getAppointmentDate() { return appointmentDate; }
+    public void setAppointmentDate(LocalDate appointmentDate) { this.appointmentDate = appointmentDate; }
 
-//     public String getPurpose() { return purpose; }
-//     public void setPurpose(String purpose) { this.purpose = purpose; }
+    public String getPurpose() { return purpose; }
+    public void setPurpose(String purpose) { this.purpose = purpose; }
 
-//     public String getStatus() { return status; }
-//     public void setStatus(String status) { this.status = status; }
-// }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+}
