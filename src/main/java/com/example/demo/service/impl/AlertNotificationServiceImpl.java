@@ -5,10 +5,12 @@ import com.example.demo.model.VisitLog;
 import com.example.demo.repository.AlertNotificationRepository;
 import com.example.demo.repository.VisitLogRepository;
 import com.example.demo.service.AlertNotificationService;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class AlertNotificationServiceImpl implements AlertNotificationService {
 
     // injected by reflection in tests
