@@ -1,11 +1,10 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Host;
-import java.util.*;
+import java.util.Optional;
 
 public interface HostRepository {
-    Host save(Host h);
+    Host save(Host host);
     Optional<Host> findById(Long id);
-    List<Host> findAll();
     Optional<Host> findByEmail(String email);
 }
